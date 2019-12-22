@@ -1,5 +1,10 @@
+import "reflect-metadata"
+
 export class Response {
-    public teste1;
-    public teste2;
-    public teste3;
+    @Reflect.metadata('decription', true)
+    public teste1: string; 
+    public teste2: string;
+    public teste3: any;
+    public teste4: any;
+    public teste5: any;
 }

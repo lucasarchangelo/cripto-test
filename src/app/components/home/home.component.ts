@@ -14,18 +14,22 @@ export class HomeComponent implements OnInit {
   constructor(private readonly testeService: TestesService) { }
 
   ngOnInit() {
+    const response = new Response();
+    response.teste1 = 'teste';
+    console.log(response.teste1);
     const criptoProperties = new CriptoProperties();
     criptoProperties.decriptValues = [];
     criptoProperties.hasDecritpValues = true;
     criptoProperties.hasEncriptionValues = true;
     criptoProperties.encriptionValues = [];
     this.testeService.get<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', criptoProperties)
-      .subscribe((value) => {
-        console.log(value);
+      .subscribe((value: Response) => {
+        console.log(Reflect.getMetadata('decription', value, 'teste1'));
+        console.log(value.teste1);
       });
 
     this.testeService.post<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', {teste: 'oi'}, criptoProperties)
-      .subscribe((value) => {
+      .subscribe((value: Response) => {
         console.log(value);
       });
   }
