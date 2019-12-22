@@ -15,16 +15,16 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     const criptoProperties = new CriptoProperties();
-    criptoProperties.decriptValues = ['teste1', 'teste3'];
+    criptoProperties.decriptValues = [];
     criptoProperties.hasDecritpValues = true;
     criptoProperties.hasEncriptionValues = true;
-    criptoProperties.encriptionValues = ['teste'];
-    this.testeService.get<Response>('http://www.mocky.io/v2/5dfe515b3100000a1fc96f34', criptoProperties)
+    criptoProperties.encriptionValues = [];
+    this.testeService.get<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', criptoProperties)
       .subscribe((value) => {
         console.log(value);
       });
 
-    this.testeService.post<Response>('http://www.mocky.io/v2/5dfe515b3100000a1fc96f34', {teste: 'oi'}, criptoProperties)
+    this.testeService.post<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', {teste: 'oi'}, criptoProperties)
       .subscribe((value) => {
         console.log(value);
       });

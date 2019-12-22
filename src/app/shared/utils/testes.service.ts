@@ -34,40 +34,34 @@ export class TestesService {
     }
 
     return this.httpClient.post<T>(url, encriptedBody)
-    .pipe(
-      map((response: T) => {
-        if (criptoProperties.hasDecritpValues) {
-          this.criptionValues<T>('decriptionType', criptoProperties.decriptValues, response);
-        }
-        return response;
-      })
-    );
+      .pipe(
+        map((response: T) => {
+          if (criptoProperties.hasDecritpValues) {
+            this.criptionValues<T>('decriptionType', criptoProperties.decriptValues, response);
+          }
+          return response;
+        })
+      );
   }
 
   private criptionValues<T>(criptionType: string, criptionValues: Array<string>, reqResp: T): T {
-
-    const keys = Object.keys(reqResp);
     if (criptionValues.length > 0) {
-      criptionValues.forEach((element) => {
-        keys.forEach((key) => {
-          if (key === element) {
-            if (criptionType === 'encriptionType') {
-              reqResp[key] = 'encriptionValue';
-            } else {
-              reqResp[key] = 'decriptionValue';
-            }
-          }
-        })
-      });
-      return reqResp;
+      return null;
     } else {
-      keys.forEach((key) => {
-        if (criptionType === 'encriptionType') {
-          reqResp[key] = 'encriptionValue';
-        } else {
-          reqResp[key] = 'decriptionValue';
-        }
-      });
+      return this.recursiveCript(reqResp, criptionType);
     }
+
+  }
+
+  private recursiveCript<T>(reqResp: T, criptionType: string): T {
+    const keys = Object.keys(reqResp);
+    keys.forEach((element) => {
+      if (typeof reqResp[element] === 'string' || typeof reqResp[element] === 'number') {
+        reqResp[element] = criptionType === 'encriptionType' ? 'encriptedValue' : 'decriptedValue';
+      } else {
+        this.recursiveCript(reqResp[element], criptionType);
+      }
+    })
+    return reqResp;
   }
 }
