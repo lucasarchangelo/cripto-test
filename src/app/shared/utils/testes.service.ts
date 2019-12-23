@@ -56,6 +56,8 @@ export class TestesService {
   private recursiveCript<T>(reqResp: T, criptionType: string): T {
     const keys = Object.keys(reqResp);
     keys.forEach((element) => {
+      console.log('element', element);
+      console.log(Reflect.getMetadata('decription', reqResp, element));
       if (typeof reqResp[element] === 'string' || typeof reqResp[element] === 'number') {
         reqResp[element] = criptionType === 'encriptionType' ? 'encriptedValue' : 'decriptedValue';
       } else {
