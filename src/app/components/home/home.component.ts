@@ -25,21 +25,18 @@ export class HomeComponent implements OnInit {
     criptoProperties.hasEncriptionValues = true;
     criptoProperties.encriptionValues = [];
     
-    this.testeService.get<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', criptoProperties)
+    this.testeService.get<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', new Response())
       .subscribe((value: Response) => {
-        console.log(value.teste1);
+        console.log(value);
+        console.log(value.teste4);
+        console.log('TESTELUCAS ', Reflect.getMetadata('decription', value, 'teste1'));
+        console.log('TESTELUCAS ', Reflect.getMetadata('decription', value.teste4, 'compostName1'));
+        console.log('TESTELUCAS ', Reflect.getMetadata('decription', value.teste4.compostName3, 'lucas2'));
       });
 
-    this.testeService.post<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', { teste: 'oi' }, criptoProperties)
+    this.testeService.post<Response>('http://www.mocky.io/v2/5dfed7dc3200006a005aef32', { teste: 'oi' })
       .subscribe((value: Response) => {
         console.log(Reflect.getMetadata('decription', value, 'teste1'));
-      });
-
-    this.httpClient.get<Tipo1>('http://www.mocky.io/v2/5dffe2e63200006a005af059', {observe: 'response' })
-      .subscribe((value: HttpResponse<Tipo1>) => {
-        Object.setPrototypeOf(value.body, Tipo1.prototype);
-        console.log(value.body);
-        console.log('TESTELUCAS ', Reflect.getMetadata('decription', value.body, 'teste1'));
       });
   }
 }

@@ -11,59 +11,52 @@ export class TestesService {
 
   constructor(private readonly httpClient: HttpClient) { }
 
-  public get<T>(url: string, criptoProperties: CriptoProperties): Observable<T> {
-
+  public get<T>(url: string, prop: any): Observable<T> {
     return this.httpClient.get<T>(url)
       .pipe(
         map((response: T) => {
-          if (criptoProperties.hasDecritpValues) {
-            this.criptionValues<T>('decriptionType', criptoProperties.decriptValues, response);
-          }
+          this.recursiveCript<T>('decriptionType', Object.setPrototypeOf(this.createObjectPrototype(response, prop), prop));
           return response;
         })
       );
   }
 
-  public post<T>(url: string, body: any, criptoProperties: CriptoProperties): Observable<T> {
-    let encriptedBody;
-
-    if (criptoProperties.hasEncriptionValues) {
-      encriptedBody = this.criptionValues<T>('encriptionType', criptoProperties.encriptionValues, body);
-    } else {
-      encriptedBody = body;
-    }
-
-    return this.httpClient.post<T>(url, encriptedBody)
+  public post<T>(url: string, body: any): Observable<T> {
+    return this.httpClient.post<T>(url, this.recursiveCript<T>('encriptionType', body))
       .pipe(
         map((response: T) => {
-          if (criptoProperties.hasDecritpValues) {
-            this.criptionValues<T>('decriptionType', criptoProperties.decriptValues, response);
-          }
+          this.recursiveCript<T>('decriptionType', response);
           return response;
         })
       );
   }
 
-  private criptionValues<T>(criptionType: string, criptionValues: Array<string>, reqResp: T): T {
-    if (criptionValues.length > 0) {
-      return null;
-    } else {
-      return this.recursiveCript(reqResp, criptionType);
-    }
-
-  }
-
-  private recursiveCript<T>(reqResp: T, criptionType: string): T {
+  private recursiveCript<T>(criptionType: string, reqResp: T): T {
     const keys = Object.keys(reqResp);
     keys.forEach((element) => {
-      console.log('element', element);
-      console.log(Reflect.getMetadata('decription', reqResp, element));
       if (typeof reqResp[element] === 'string' || typeof reqResp[element] === 'number') {
-        reqResp[element] = criptionType === 'encriptionType' ? 'encriptedValue' : 'decriptedValue';
+        console.log('TESTELUCAS ', 'element ', element , Reflect.getMetadata('decription', reqResp, element));
+        if(Reflect.getMetadata('decription', reqResp, element)) { 
+          reqResp[element] = criptionType === 'encriptionType' ? 'encriptedValue' : 'decriptedValue';
+        }
       } else {
-        this.recursiveCript(reqResp[element], criptionType);
+        this.recursiveCript(criptionType, reqResp[element], );
       }
     })
     return reqResp;
+  }
+
+  private createObjectPrototype<T>(object, instanceObject): T {
+    const instanceObjectKeys =  Object.keys(instanceObject);
+    Object.keys(object)
+      .forEach((element) => {
+        if(instanceObjectKeys.includes(element)) {
+          if(typeof object[element] !== 'string' && typeof object[element] !== 'number') {
+            object[element] = Object.setPrototypeOf(object[element], instanceObject[element]);
+            this.createObjectPrototype(object[element], instanceObject[element]);
+          }
+        }
+      });
+      return object;
   }
 }
