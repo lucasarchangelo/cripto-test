@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { CriptoProperties } from '../models/cripto-properties';
 
 @Injectable({
   providedIn: 'root'
@@ -11,21 +10,28 @@ export class TestesService {
 
   constructor(private readonly httpClient: HttpClient) { }
 
-  public get<T>(url: string, prop: any): Observable<T> {
+  public get<T>(url: string, instantiatedResponseObject: any): Observable<T> {
     return this.httpClient.get<T>(url)
       .pipe(
         map((response: T) => {
-          this.recursiveCript<T>('decriptionType', Object.setPrototypeOf(this.createObjectPrototype(response, prop), prop));
+          this.recursiveCript<T>('decription', Object.setPrototypeOf(this.createObjectPrototype(response, instantiatedResponseObject), instantiatedResponseObject));
           return response;
         })
       );
   }
 
-  public post<T>(url: string, body: any): Observable<T> {
-    return this.httpClient.post<T>(url, this.recursiveCript<T>('encriptionType', body))
+  public post<T>(
+    url: string,
+    body: any,
+    instantiatedRequestObject: any,
+    instantiatedResponseObject: any
+    ): Observable<T> {
+    const teste = this.recursiveCript<T>('encription', Object.setPrototypeOf(this.createObjectPrototype(body, instantiatedRequestObject), instantiatedRequestObject));
+    console.log('Request: ', teste);
+    return this.httpClient.post<T>(url, body)
       .pipe(
         map((response: T) => {
-          this.recursiveCript<T>('decriptionType', response);
+          this.recursiveCript<T>('decription', Object.setPrototypeOf(this.createObjectPrototype(response, instantiatedResponseObject), instantiatedResponseObject));
           return response;
         })
       );
@@ -35,9 +41,8 @@ export class TestesService {
     const keys = Object.keys(reqResp);
     keys.forEach((element) => {
       if (typeof reqResp[element] === 'string' || typeof reqResp[element] === 'number') {
-        console.log('TESTELUCAS ', 'element ', element , Reflect.getMetadata('decription', reqResp, element));
-        if(Reflect.getMetadata('decription', reqResp, element)) { 
-          reqResp[element] = criptionType === 'encriptionType' ? 'encriptedValue' : 'decriptedValue';
+        if(Reflect.getMetadata(criptionType, reqResp, element)) { 
+          reqResp[element] = criptionType === 'encription' ? 'encriptedValue' : 'decriptedValue';
         }
       } else {
         this.recursiveCript(criptionType, reqResp[element], );
